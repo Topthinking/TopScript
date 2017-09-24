@@ -10,6 +10,13 @@
         react实现服务端渲染的技术，主要包括两块文件夹{server,client},从字面意思就很明显这是一个B/S架构，接下来是从server文件夹着手分析，在到client文件夹
         在这之前，我们需要对Next.js的next命令进行解读，他其实是我们整个Next.js项目执行的起步器
 
+### package.json
+
+- 这里说明一下，调试next.js的方法
+- 使用 `npm run build` 实现`next.js`项目的编译，我们可以看到next.js使用的是`taskr`命令，其实他执行的配置文件在taskfile.js中，使用的方式和gulp的task模式是一致的
+- 自己创建一个next.js项目，在编译的时候使用的`next`命令使用next.js源码目录中的`dist/bin/next`这个命令去执行当前自定义的项目
+- 这样便可以修改next.js源码，`taskr`监听编译后，在运行`dist/bin/next`自己创建的项目，然后观察实际运行的情况。可以添加打印，断点去实现和测试源码中看不懂的部分
+
 ### bin 文件夹
     我们的所有命令都是next开头，那么自然next是执行的命令，对应到执行文件，也就是该目录下的next文件，接下一一解读
 
@@ -73,4 +80,6 @@ const defaultConfig = {
   useFileSystemPublicRoutes: true
 }
 ```
+
+Server对象的构造方法中的 `defineRoutes` 需要着重去解读路由的定义,所以我们需要去弄清next.js的route
 
