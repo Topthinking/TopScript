@@ -55,7 +55,7 @@ srv.start(argv.port, argv.hostname)
 
 ### server 文件夹
     首先解读index.js文件中Server对象的构造方法中的内容
-> index.js > constructor
+> index.js > constructor()
     dev==true 需要解读 hotReloader 也就是
 ```js
 getHotReloader (dir, options) {
@@ -63,10 +63,10 @@ getHotReloader (dir, options) {
     return new HotReloader(dir, options)
 }
 ```
-   > hot-reloader.js > constructor
+>> hot-reloader.js  constructor
    返回的是HotReloader对象
 
->config.js
+>>config.js
         
     我们可以配置next.config.js文件来定制我们的项目
 ```js
@@ -82,4 +82,8 @@ const defaultConfig = {
 ```
 
 Server对象的构造方法中的 `defineRoutes` 需要着重去解读路由的定义,所以我们需要去弄清next.js的route
+这里可以去看route.md中的介绍
 
+OK,我们理清了index.js中的构造方法中的所有配置信息，接下来就是真正要调用Server对象的方法start要做的事情了
+
+> index.js > start()
