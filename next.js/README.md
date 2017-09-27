@@ -82,8 +82,8 @@ const defaultConfig = {
 ```
 
 Server对象的构造方法中的 `defineRoutes` 需要着重去解读路由的定义,所以我们需要去弄清next.js的route
-这里可以去看route.md中的介绍
+这里可以去看[route.md](./route.md)中的介绍
 
 OK,我们理清了index.js中的构造方法中的所有配置信息，接下来就是真正要调用Server对象的方法start要做的事情了
 
-> index.js > start()
+> ### index.js > start()  这里是程序真正开始执行的地方，之前的说明都在做一些配置信息的准备工作
