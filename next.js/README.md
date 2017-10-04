@@ -7,8 +7,10 @@
 
 ## 开始
         首先要先去github上将源码资源下载下来， https://github.com/zeit/next.js
-        react实现服务端渲染的技术，主要包括两块文件夹{server,client},从字面意思就很明显这是一个B/S架构，接下来是从server文件夹着手分析，在到client文件夹
+        react实现服务端渲染的技术，主要包括两块文件夹{server,client},从字面意思就很明显这是一个B/S架构，接下来是从server文件夹着手分析，再到client文件夹
         在这之前，我们需要对Next.js的next命令进行解读，他其实是我们整个Next.js项目执行的起步器
+
+        注意：整个next.js项目的主流程，我会标记两个✨，想直接了解next.js是如何工作的可以直接看打星星部分
 
 ### package.json
 
@@ -81,9 +83,24 @@ const defaultConfig = {
 }
 ```
 
-Server对象的构造方法中的 `defineRoutes` 需要着重去解读路由的定义,所以我们需要去弄清next.js的route
+✨✨Server对象的构造方法中的 `defineRoutes` 需要着重去解读路由的定义,所以我们需要去弄清next.js的route
 这里可以去看[route.md](./route.md)中的介绍
 
 OK,我们理清了index.js中的构造方法中的所有配置信息，接下来就是真正要调用Server对象的方法start要做的事情了
 
-> ### index.js > start()  这里是程序真正开始执行的地方，之前的说明都在做一些配置信息的准备工作
+> ### ✨✨index.js > start()  这里是程序真正开始执行的地方，之前的说明都在做一些配置信息的准备工作
+内容很短，我就把方法贴出来了
+```js
+async start (port, hostname) {
+    await this.prepare()
+    this.http = http.createServer(this.getRequestHandler())
+    await new Promise((resolve, reject) => {
+      // This code catches EADDRINUSE error if the port is already in use
+      this.http.on('error', reject)
+      this.http.on('listening', () => resolve())
+      this.http.listen(port, hostname)
+    })
+  }
+```
+
+这是一个异步的方法，里面的调用都是在处理异步等待返回，映入眼帘的便是`prepare`方法，字面意思是准备，其实实现的内容是在dev环境下才会引用`hot-reloader.js`中的`HotReloader`对象，这里是在之前的构造方法中去获取的，那么这里要另开一个文件解读[hot-reloader.js](./hot-reloader.md)文件
