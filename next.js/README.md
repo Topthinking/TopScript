@@ -1,22 +1,33 @@
 # Next.js 源码分析 - Topthinking
 
 ## 概述
-    该框架自身结合react和webpack,加上自己的一套路由体系，实现了服务端的渲染
-    1.页面刷新(首屏加载),服务端通过路由解析，引入.next文件中对应的编译后的代码，在服务端通过react-dom实现从vdom到字符串的转变，最终渲染出整个页面，同时会在_next文件夹中读取客户端需要的配置文件，将需要的js文件随服务器一同传给客户端即浏览器
-    2.部分刷新(前端路由跳转),在客户端(浏览器)会根据要跳转的路由，通过建立script标签去服务器的_next文件拉取对应路由所需要的js文件，这里会对该js文件的引用做缓存，除非浏览器刷新
-    3.至于在通过路由解析，不管是服务器上直接引用资源文件，还是客户端请求服务器上的资源文件，其路由都可以很好的控制组件的加载，也就是说，更好的使用getInitialProps方法
+
+该框架自身结合react和webpack,加上自己的一套路由体系，实现了服务端的渲染
+
+1.页面刷新(首屏加载),服务端通过路由解析，引入.next文件中对应的编译后的代码，在服务端通过react-dom实现从vdom到字符串的转变，最终渲染出整个页面，同时会在_next文件夹中读取客户端需要的配置文件，将需要的js文件随服务器一同传给客户端即浏览器
+
+2.部分刷新(前端路由跳转),在客户端(浏览器)会根据要跳转的路由，通过建立script标签去服务器的_next文件拉取对应路由所需要的js文件，这里会对该js文件的引用做缓存，除非浏览器刷新
+
+3.至于在通过路由解析，不管是服务器上直接引用资源文件，还是客户端请求服务器上的资源文件，其路由都可以很好的控制组件的加载，也就是说，更好的使用getInitialProps方法
 
 ## 整体分析
-        next.js 采用了react的getInitialProps方法实现了服务端的数据远程异步获取的操作，使用react的虚拟dom在服务端实现了render工作，同时利用react-dom的renderToString方法最终将render的返回的虚拟dom对象转为html字符串，最后将得到的字符串返回给客户端
-        期间next.js内部封装了webpack功能，同时利用node的http模块实现了服务器，再通过next.js定义的路由规则去读取pages文件夹下的文件作为请求的返回的html文档，最终实现了整个功能
-        技术栈：nodejs模块 + webpack + react + B/S架构思维 + 数据渲染原理
+
+next.js 采用了react的getInitialProps方法实现了服务端的数据远程异步获取的操作，使用react的虚拟dom在服务端实现了
+render工作，同时利用react-dom的renderToString方法最终将render的返回的虚拟dom对象转为html字符串，最后将得到的字符串返回给客户端
+
+期间next.js内部封装了webpack功能，同时利用node的http模块实现了服务器，再通过next.js定义的路由规则去读取pages文件夹下的文件作为请求的返回的html文档，最终实现了整个功能
+
+技术栈：nodejs模块 + webpack + react + B/S架构思维 + 数据渲染原理
 
 ## 开始
-        首先要先去github上将源码资源下载下来， https://github.com/zeit/next.js
-        react实现服务端渲染的技术，主要包括两块文件夹{server,client},从字面意思就很明显这是一个B/S架构，接下来是从server文件夹着手分析，再到client文件夹
-        在这之前，我们需要对Next.js的next命令进行解读，他其实是我们整个Next.js项目执行的起步器
 
-        注意：整个next.js项目的主流程，我会标记两个✨，想直接了解next.js是如何工作的可以直接看打星星部分
+首先要先去github上将源码资源下载下来， https://github.com/zeit/next.js
+
+react实现服务端渲染的技术，主要包括两块文件夹{server,client},从字面意思就很明显这是一个B/S架构，接下来是从server文件夹着手分析，再到client文件夹
+
+在这之前，我们需要对Next.js的next命令进行解读，他其实是我们整个Next.js项目执行的起步器
+
+注意：整个next.js项目的主流程，我会标记两个✨，想直接了解next.js是如何工作的可以直接看打星星部分
 
 ### package.json
 
